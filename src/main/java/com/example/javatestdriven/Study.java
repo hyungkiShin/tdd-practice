@@ -1,2 +1,4 @@
-package com.example.javatestdriven;public class Study {
+package com.example.javatestdriven;
+
+public class Study {
 }
