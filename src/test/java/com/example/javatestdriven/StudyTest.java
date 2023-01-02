@@ -5,10 +5,14 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+// DisplayNameGenerator 중 ReplaceUnderscores 전략으로 모든 테스트를 _ 언더스코어가 있다면 모두 공백으로 바꿔주겠다.
+// @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class) // 그러나 DisplayName 으로 쓰는걸 추천.
 @Slf4j
 class StudyTest {
 
