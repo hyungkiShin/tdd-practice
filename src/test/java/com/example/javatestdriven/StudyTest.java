@@ -8,6 +8,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.junit.jupiter.api.condition.EnabledOnJre;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.JRE;
+import org.junit.jupiter.api.condition.OS;
 
 import java.time.Duration;
 import java.util.function.Supplier;
@@ -20,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 // DisplayNameGenerator 중 ReplaceUnderscores 전략으로 모든 테스트를 _ 언더스코어가 있다면 모두 공백으로 바꿔주겠다.
 // @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class) // 그러나 DisplayName 으로 쓰는걸 추천.
@@ -100,6 +107,44 @@ class StudyTest {
     @DisplayName("테스트명")
     void studyTest() {
         Study study = new Study(10);
+        assertThat(study.getLimit()).isGreaterThan(0);
+    }
+
+    @Test
+    @DisplayName("특정한 조건에 따라 테스트를 실행하거나 실행하지 말아야 한다 1")
+    @EnabledOnOs({OS.MAC, OS.LINUX})
+    void studyAssumeTest1() {
+
+        // vi ~/.zshrc 에 TEST_ENV 를 LOCAL 로 설정해주고 IntelliJ 를 다시 껐다 켜야 함. ( Intellij App 이 로딩될때 System 설정을 읽어오기 때문)
+        String test_env = System.getenv("TEST_ENV");
+        log.info("test_env : {}", test_env);
+
+        // assumeTrue 는 조건이 true 일때만 테스트를 실행한다.
+        assumeTrue("LOCAL".equals(test_env));
+        Study study = new Study(100);
+        assertThat(study.getLimit()).isGreaterThan(0);
+    }
+
+    @Test
+    @DisplayName("특정한 조건에 따라 테스트를 실행하거나 실행하지 말아야 한다2")
+    @DisabledOnOs({OS.MAC, OS.LINUX})
+    @EnabledOnJre({JRE.JAVA_8, JRE.JAVA_9, JRE.JAVA_10})
+    void studyAssumeTest2() {
+        // vi ~/.zshrc 에 TEST_ENV 를 LOCAL 로 설정해주고 IntelliJ 를 다시 껐다 켜야 함. ( Intellij App 이 로딩될때 System 설정을 읽어오기 때문)
+        String test_env = System.getenv("TEST_ENV");
+        log.info("test_env : {}", test_env);
+
+        // assumeTrue 는 조건이 true 일때만 테스트를 실행한다.
+        assumeTrue("LOCAL".equals(test_env));
+        Study study = new Study(100);
+        assertThat(study.getLimit()).isGreaterThan(0);
+    }
+
+    @Test
+    @DisplayName("특정한 조건에 따라 테스트를 실행하거나 실행하지 말아야 한다2")
+    @EnabledIfEnvironmentVariable(named = "TEST_ENV", matches = "LOCAL")
+    void studyAssumeTest3() {
+        Study study = new Study(100);
         assertThat(study.getLimit()).isGreaterThan(0);
     }
 
