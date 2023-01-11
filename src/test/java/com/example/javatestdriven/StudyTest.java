@@ -7,6 +7,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
@@ -146,6 +147,14 @@ class StudyTest {
     void studyAssumeTest3() {
         Study study = new Study(100);
         assertThat(study.getLimit()).isGreaterThan(0);
+    }
+    
+    @Test
+    @DisplayName("테스트 태깅을 해보자")
+    @Tag("fast")
+    void 테스트_태깅을_해보자() {
+        Study actual = new Study(100);
+        assertThat(actual.getLimit()).isGreaterThan(0);
     }
 
     @Test
