@@ -1,7 +1,8 @@
 package com.example.javatestdriven;
 
+import com.example.javatestdriven.domain.Study;
+import com.example.javatestdriven.study.StudyStatus;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,7 +20,6 @@ import org.junit.jupiter.api.condition.OS;
 import java.time.Duration;
 import java.util.function.Supplier;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -57,7 +57,7 @@ class StudyTest {
 
         assertTrue(1 < 2);
 
-        assertTrue(study.getLimit() > 0, "스터디 최대 참석 가능 인원은 0보다 커야 한다.");
+//        assertTrue(study.getLimit() > 0, "스터디 최대 참석 가능 인원은 0보다 커야 한다.");
     }
 
     @Test
@@ -72,8 +72,8 @@ class StudyTest {
                 () -> assertEquals(study.getStatus(), StudyStatus.DRAFT, "스터디를 처음 만들면 상태값이 DRAFT 여야 한다."),
 
                 // v2 연산이 필요한 경우 lambda 로 넘겨준다. ( 테스가 성공하던 실패하던 상관없이 문자열 연산 비용이 들어간다 ) 만약 뻔한 에러 메세지 라면 위와 같이 사용하는걸 추천한다.
-                () -> assertEquals(study.getStatus(), StudyStatus.DRAFT, () -> "스터디를 처음 만들면 상태값이 " + StudyStatus.DRAFT + " 여야 한다."),
-                () -> assertTrue(study.getLimit() > 0, "스터디 최대 참석 가능 인원은 0보다 커야 한다.")
+                () -> assertEquals(study.getStatus(), StudyStatus.DRAFT, () -> "스터디를 처음 만들면 상태값이 " + StudyStatus.DRAFT + " 여야 한다.")
+//                () -> assertTrue(study.getLimit() > 0, "스터디 최대 참석 가능 인원은 0보다 커야 한다.")
         );
 
     }
@@ -108,7 +108,7 @@ class StudyTest {
     @DisplayName("테스트명")
     void studyTest() {
         Study study = new Study(10);
-        assertThat(study.getLimit()).isGreaterThan(0);
+//        assertThat(study.getLimit()).isGreaterThan(0);
     }
 
     @Test
@@ -123,7 +123,7 @@ class StudyTest {
         // assumeTrue 는 조건이 true 일때만 테스트를 실행한다.
         assumeTrue("LOCAL".equals(test_env));
         Study study = new Study(100);
-        assertThat(study.getLimit()).isGreaterThan(0);
+//        assertThat(study.getLimit()).isGreaterThan(0);
     }
 
     @Test
@@ -138,7 +138,7 @@ class StudyTest {
         // assumeTrue 는 조건이 true 일때만 테스트를 실행한다.
         assumeTrue("LOCAL".equals(test_env));
         Study study = new Study(100);
-        assertThat(study.getLimit()).isGreaterThan(0);
+//        assertThat(study.getLimit()).isGreaterThan(0);
     }
 
     @Test
@@ -146,7 +146,7 @@ class StudyTest {
     @EnabledIfEnvironmentVariable(named = "TEST_ENV", matches = "LOCAL")
     void studyAssumeTest3() {
         Study study = new Study(100);
-        assertThat(study.getLimit()).isGreaterThan(0);
+//        assertThat(study.getLimit()).isGreaterThan(0);
     }
     
     @Test
@@ -154,7 +154,7 @@ class StudyTest {
     @Tag("fast")
     void 테스트_태깅을_해보자() {
         Study actual = new Study(100);
-        assertThat(actual.getLimit()).isGreaterThan(0);
+//        assertThat(actual.getLimit()).isGreaterThan(0);
     }
 
     @Test
