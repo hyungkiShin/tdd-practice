@@ -13,6 +13,9 @@ public class StudyService {
     private final StudyRepository repository;
 
     public StudyService(MemberService memberService, StudyRepository repository) {
+        if(memberService == null || repository == null) {
+            throw new IllegalArgumentException("memberService or repository must not be null");
+        }
         this.memberService = memberService;
         this.repository = repository;
     }
