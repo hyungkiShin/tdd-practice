@@ -16,11 +16,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -95,7 +98,7 @@ class StudyServiceTest {
     }
 
     @Test
-    @DisplayName("member 와 study 를 생성하면 repository 에 저장하고, memberService 에 알림을 주어야 한다")
+    @DisplayName("BDD 스타일 테스트")
     void testMockStubbingStudy() {
 
         final StudyService studyService = new StudyService(memberService, repository);
@@ -109,32 +112,21 @@ class StudyServiceTest {
 
         Study study = new Study(10, "테스트");
 
-        when(memberService.findById(1L))
-                .thenReturn(Optional.of(member));
+        // given
+        given(memberService.findById(1L))
+                .willReturn(Optional.of(member));
 
-        when(repository.save(study))
-                .thenReturn(study);
+        given(repository.save(study))
+                .willReturn(study);
 
+        // when
         studyService.createNewStudy(1L, study);
 
-        assertNotNull(study.getOwner());
-
+        // then
         assertEquals(member, study.getOwner());
-
-        assertEquals(member, study.getOwner());
-
-        // 검증한다 -> notify 는 memberService 에서 1번 호출되어야 한다.
-        verify(memberService, times(1)).notify(study);
-
-        // 검증한다 -> notify 는 memberService 에서 1번 호출되어야 한다.
-        verify(memberService, times(1)).notify(member);
-
-        // validate 는 memberService 에서 전혀 호출이 되지 않아야 한다
-        verify(memberService, never()).validate(any());
-
-        InOrder inOrder = inOrder(memberService);
-        inOrder.verify(memberService).notify(study);
-        inOrder.verify(memberService).notify(member);
+        then(memberService).should(times(1)).notify(study);
+        // memberService 라는 Mock 객체는 더이상 사용되지 않아야 한다.
+        then(memberService).shouldHaveNoMoreInteractions();
     }
 
 }
