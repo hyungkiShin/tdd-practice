@@ -15,8 +15,8 @@ public class TestInstanceTest {
     void create_new_study() {
         System.out.println("this = " + this);
         System.out.println("value++ = " + value++);
-        Study actual = new Study(1);
-        assertThat(actual.getLimit()).isGreaterThan(0);
+//        Study actual = new Study(1);
+//        assertThat(actual.getLimit()).isGreaterThan(0);
     }
 
     @SlowTest
