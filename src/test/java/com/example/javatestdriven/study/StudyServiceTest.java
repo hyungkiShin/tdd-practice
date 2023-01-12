@@ -1,12 +1,12 @@
 package com.example.javatestdriven.study;
 
 import com.example.javatestdriven.domain.Member;
+import com.example.javatestdriven.domain.Study;
 import com.example.javatestdriven.member.MemberService;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -17,8 +17,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,7 +42,7 @@ class StudyServiceTest {
     @Test
     void test_멤버_stubbing() {
         // given
-        Member member =  Member.builder()
+        Member member = Member.builder()
                 .id(1L)
                 .email("tkaqkeldk@naver.com")
                 .build();
@@ -69,7 +71,7 @@ class StudyServiceTest {
     @DisplayName("테스트명")
     void 테스트명() {
         // given
-        Member member =  Member.builder()
+        Member member = Member.builder()
                 .id(1L)
                 .email("tkaqkeldk@naver.com")
                 .build();
@@ -91,4 +93,48 @@ class StudyServiceTest {
 
         assertEquals(Optional.empty(), memberService.findById(3L));
     }
+
+    @Test
+    @DisplayName("member 와 study 를 생성하면 repository 에 저장하고, memberService 에 알림을 주어야 한다")
+    void testMockStubbingStudy() {
+
+        final StudyService studyService = new StudyService(memberService, repository);
+        assertNotNull(studyService);
+
+        final Member member = Member.builder()
+                .id(1L)
+                .email("tkaqkeldk@naver.com")
+                .build();
+
+
+        Study study = new Study(10, "테스트");
+
+        when(memberService.findById(1L))
+                .thenReturn(Optional.of(member));
+
+        when(repository.save(study))
+                .thenReturn(study);
+
+        studyService.createNewStudy(1L, study);
+
+        assertNotNull(study.getOwner());
+
+        assertEquals(member, study.getOwner());
+
+        assertEquals(member, study.getOwner());
+
+        // 검증한다 -> notify 는 memberService 에서 1번 호출되어야 한다.
+        verify(memberService, times(1)).notify(study);
+
+        // 검증한다 -> notify 는 memberService 에서 1번 호출되어야 한다.
+        verify(memberService, times(1)).notify(member);
+
+        // validate 는 memberService 에서 전혀 호출이 되지 않아야 한다
+        verify(memberService, never()).validate(any());
+
+        InOrder inOrder = inOrder(memberService);
+        inOrder.verify(memberService).notify(study);
+        inOrder.verify(memberService).notify(member);
+    }
+
 }

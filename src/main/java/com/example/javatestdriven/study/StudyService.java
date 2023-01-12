@@ -13,7 +13,7 @@ public class StudyService {
     private final StudyRepository repository;
 
     public StudyService(MemberService memberService, StudyRepository repository) {
-        if(memberService == null || repository == null) {
+        if (memberService == null || repository == null) {
             throw new IllegalArgumentException("memberService or repository must not be null");
         }
         this.memberService = memberService;
@@ -27,6 +27,15 @@ public class StudyService {
                 member.orElseThrow(() ->
                         new IllegalArgumentException("Member doesn't exist for id '" + memberId + "'"))
         );
+
+        Study newStudy = repository.save(study);
+
+        // study 에 알림을 준다
+        memberService.notify(newStudy);
+
+        // member 한테 알림을 준다
+        memberService.notify(member.get());
+
         return repository.save(study);
     }
 }
